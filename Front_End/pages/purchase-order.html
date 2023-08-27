@@ -38,12 +38,12 @@
                     <div class="card">
                         <div class="card-header bg-primary font-weight-bolder">Invoice Details</div>
                         <div class="card-body">
-                            <form>
+                            <form id="formData">
                                 <div class="row">
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label>Order ID :</label>
-                                            <input class="form-control" id="txtOrderID" type="text">
+                                            <input class="form-control" id="txtOrderID" type="text" name="id" >
                                             <span class="control-error"
                                                   id="orderId-invalid-error"></span>
                                         </div>
@@ -51,7 +51,7 @@
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label>Date :</label>
-                                            <input class="form-control" id="txtDate" type="date">
+                                            <input class="form-control" id="txtDate" type="date" name="date">
                                         </div>
                                     </div>
                                 </div>
@@ -78,7 +78,7 @@
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label>Name :</label>
-                                            <input class="form-control" id="orderCustomerName" type="text">
+                                            <input class="form-control" id="orderCustomerName" type="text" name="cusName">
                                         </div>
                                     </div>
                                     <div class="col-6">
@@ -393,7 +393,38 @@
         $("#subtotal").text(subtotalAmount.toFixed(2));
         $("#txtBalance").val(balanceAmount.toFixed(2));
     }
+    $("#btnSubmitOrder").click(function () {
+        let formData = $("#formData").serialize();
+        $.ajax({
+            url:BASE_URL+ "purchase-order",
+            method: "post",
+            data: formData,
+            dataType:"json",
+            success: function (res) {
+                alert(res.message);
+            },
+            error: function (error) {
+                alert(JSON.parse(error.responseText).message);
+            }
+        });
+    });
+    let disTOGave = 0;
 
+    $('#txtDiscount').on('keyup', function() {
+        let dis = parseFloat($('#txtDiscount').val());
+        let tot = parseFloat($('#txtBalance').val());
+
+        console.log(dis + "==" + tot);
+
+        let totMin = tot * (dis / 100);
+        console.log("Discount Amount: " + totMin);
+
+        let subTot = tot - totMin;
+        disTOGave = totMin;
+
+        $('#subTotal').val(subTot);
+        updateTotals();
+    });
 </script>
 </body>
 </html>
