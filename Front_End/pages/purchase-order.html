@@ -22,8 +22,9 @@
     <ul class="list-group list-group-horizontal text-danger justify-content-end font-weight-bold">
         <li class="list-group-item bg-white" id="lnkHome"><a href="../index.html">Home</a></li>
         <li class="list-group-item bg-white" id="lnkCustomer"><a href="customer.html">Customer</a></li>
-        <li class="list-group-item bg-white" id="lnkItem"><a  href="item.html">Item</a></li>
-        <li class="list-group-item bg-danger text-white" id="lnkOrders"><a class="text-white" href="purchase-order.html">Orders</a></li>
+        <li class="list-group-item bg-white" id="lnkItem"><a href="item.html">Item</a></li>
+        <li class="list-group-item bg-danger text-white" id="lnkOrders"><a class="text-white"
+                                                                           href="purchase-order.html">Orders</a></li>
     </ul>
 </header>
 
@@ -229,7 +230,170 @@
 </main>
 
 
-<script src="../assets/js/jquery-3.7.0.min.js"></script>
+<script src="../assets/js/jquery-3.6.1.min.js"></script>
+<script src="../assets/js/bootstrap.min.js"></script>
+<script>
+    const BASE_URL = "http://localhost:8080/Pos/pages/";
 
+    $(document).ready(function () {
+        loadItemCode();
+        loadCusCode();
+        fillCurrentDate();
+        updateOrderTable();
+        updateTotals();
+        $("#selectItemCode").change(function () {
+            var selectedCode = $(this).val();
+            if (selectedCode) {
+                fetchItemDetails(selectedCode);
+            }
+        });
+        $("#selectCusID").change(function () {
+            var selectedid = $(this).val();
+            if (selectedid) {
+                fetchCusDetails(selectedid);
+            }
+        });
+    });
+
+    function loadItemCode() {
+        $("#selectItemCode").empty();
+        $.ajax({
+            url: BASE_URL+'item?option=loadCode',
+            success: function (res) {
+                console.log(res); // Check the response in the browser console
+                for (let item of res.data) {
+                    console.log(item.code); // Check if you're getting the item codes correctly
+                    let id = `<option>${item.code}</option>`;
+                    $("#selectItemCode").append(id);
+                }
+            },
+            error: function (error) {
+                alert(JSON.parse(error.responseText).message);
+            }
+        });
+    }
+
+    function fetchItemDetails(itemCode) {
+        $.ajax({
+            url: BASE_URL+'item?option=search',
+            data: {code: itemCode},
+            success: function (res) {
+                if (res.data.length > 0) {
+                    var item = res.data[0];
+                    $("#txtItemCode").val(item.code);
+                    $("#txtItemDescription").val(item.description);
+                    $("#txtItemPrice").val(item.price);
+                    $("#txtQTYOnHand").val(item.qty);
+                }
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+    }
+
+
+    function loadCusCode() {
+        $("#selectCusID").empty();
+        $.ajax({
+            url:BASE_URL+ 'customer?option=loadCode',
+            success: function (res) {
+                console.log(res); // Check the response in the browser console
+                for (let cus of res.data) {
+                    console.log(cus.id); // Check if you're getting the customer IDs correctly
+                    let id = `<option>${cus.id}</option>`;
+                    $("#selectCusID").append(id);
+                }
+            },
+            error: function (error) {
+                alert(JSON.parse(error.responseText).message);
+            }
+        });
+    }
+
+    function fetchCusDetails(selectedId) {
+        $.ajax({
+            url:BASE_URL+ 'customer?option=search',
+            data: {cusId: selectedId},
+            success: function (res) {
+                if (res.data.length > 0) {
+                    var cus = res.data[0];
+                    $("#orderCustomerID").val(cus.id);
+                    $("#orderCustomerName").val(cus.name);
+                    $("#orderCustomerAddress").val(cus.address);
+                }
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+    }
+
+    function fillCurrentDate() {
+        let currentDate = new Date().toISOString().split('T')[0];
+        $('#txtDate').val(currentDate);
+
+    }
+    $("#btnAddToTable").click(function() {
+        let itemCode = $("#txtItemCode").val();
+        let itemName = $("#txtItemDescription").val();
+        let price = parseFloat($("#txtItemPrice").val());
+        let quantity = parseInt($("#txtQty").val());
+
+        let total = price * quantity;
+
+        orderItems.push({
+            itemCode: itemCode,
+            itemName: itemName,
+            price: price,
+            quantity: quantity,
+            total: total
+        });
+
+        // Clear input fields
+        $("#txtItemCode").val("");
+        $("#txtItemDescription").val("");
+        $("#txtItemPrice").val("");
+        $("#txtQTYOnHand").val("");
+        $("#txtQty").val("");
+
+        updateOrderTable();
+
+        updateTotals();
+    });
+    function updateOrderTable() {
+        let tableBody = $("#orderTable");
+        tableBody.empty();
+
+        for (let item of orderItems) {
+            let row = `<tr>
+            <td>${item.itemCode}</td>
+            <td>${item.itemName}</td>
+            <td>${item.price}</td>
+            <td>${item.quantity}</td>
+            <td>${item.total}</td>
+        </tr>`;
+            tableBody.append(row);
+        }
+    }
+    function updateTotals() {
+        let totalAmount = 0;
+
+        for (let item of orderItems) {
+            totalAmount += item.total;
+        }
+
+        let subtotalAmount = totalAmount;
+        let cashAmount = parseFloat($("#txtCash").val()) || 0;
+        let discountAmount = parseFloat($("#txtDiscount").val()) || 0;
+
+        let balanceAmount = cashAmount - discountAmount - subtotalAmount;
+
+        $("#total").text(totalAmount.toFixed(2));
+        $("#subtotal").text(subtotalAmount.toFixed(2));
+        $("#txtBalance").val(balanceAmount.toFixed(2));
+    }
+
+</script>
 </body>
 </html>

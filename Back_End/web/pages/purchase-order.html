@@ -232,6 +232,10 @@
     $(document).ready(function() {
         loadItemCode();
 loadCusCode();
+        fillCurrentDate();
+        updateOrderTable();
+        updateTotals();
+
         $("#selectItemCode").change(function() {
             var selectedCode = $(this).val();
             if (selectedCode) {
@@ -250,9 +254,9 @@ loadCusCode();
         $.ajax({
             url: 'item?option=loadCode',
             success: function (res) {
-                console.log(res); // Check the response in the browser console
+                console.log(res);
                 for (let item of res.data) {
-                    console.log(item.code); // Check if you're getting the item codes correctly
+                    console.log(item.code);
                     let id = `<option>${item.code}</option>`;
                     $("#selectItemCode").append(id);
                 }
@@ -288,9 +292,9 @@ loadCusCode();
         $.ajax({
             url: 'customer?option=loadCode',
             success: function (res) {
-                console.log(res); // Check the response in the browser console
+                console.log(res);
                 for (let cus of res.data) {
-                    console.log(cus.id); // Check if you're getting the customer IDs correctly
+                    console.log(cus.id);
                     let id = `<option>${cus.id}</option>`;
                     $("#selectCusID").append(id);
                 }
@@ -319,6 +323,72 @@ loadCusCode();
         });
     }
 
+    function fillCurrentDate() {
+        let currentDate = new Date().toISOString().split('T')[0];
+        $('#txtDate').val(currentDate);
+
+    }
+    let orderItems = [];
+
+    $("#btnAddToTable").click(function() {
+        let itemCode = $("#txtItemCode").val();
+        let itemName = $("#txtItemDescription").val();
+        let price = parseFloat($("#txtItemPrice").val());
+        let quantity = parseInt($("#txtQty").val());
+
+        let total = price * quantity;
+
+        orderItems.push({
+            itemCode: itemCode,
+            itemName: itemName,
+            price: price,
+            quantity: quantity,
+            total: total
+        });
+
+        // Clear input fields
+        $("#txtItemCode").val("");
+        $("#txtItemDescription").val("");
+        $("#txtItemPrice").val("");
+        $("#txtQTYOnHand").val("");
+        $("#txtQty").val("");
+
+        updateOrderTable();
+
+        updateTotals();
+    });
+    function updateOrderTable() {
+        let tableBody = $("#orderTable");
+        tableBody.empty();
+
+        for (let item of orderItems) {
+            let row = `<tr>
+            <td>${item.itemCode}</td>
+            <td>${item.itemName}</td>
+            <td>${item.price}</td>
+            <td>${item.quantity}</td>
+            <td>${item.total}</td>
+        </tr>`;
+            tableBody.append(row);
+        }
+    }
+    function updateTotals() {
+        let totalAmount = 0;
+
+        for (let item of orderItems) {
+            totalAmount += item.total;
+        }
+
+        let subtotalAmount = totalAmount;
+        let cashAmount = parseFloat($("#txtCash").val()) || 0;
+        let discountAmount = parseFloat($("#txtDiscount").val()) || 0;
+
+        let balanceAmount = cashAmount - discountAmount - subtotalAmount;
+
+        $("#total").text(totalAmount.toFixed(2));
+        $("#subtotal").text(subtotalAmount.toFixed(2));
+        $("#txtBalance").val(balanceAmount.toFixed(2));
+    }
 
 </script>
 </body>
