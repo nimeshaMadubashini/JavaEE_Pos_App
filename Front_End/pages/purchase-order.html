@@ -260,9 +260,9 @@
         $.ajax({
             url: BASE_URL+'item?option=loadCode',
             success: function (res) {
-                console.log(res); // Check the response in the browser console
+                console.log(res);
                 for (let item of res.data) {
-                    console.log(item.code); // Check if you're getting the item codes correctly
+                    console.log(item.code);
                     let id = `<option>${item.code}</option>`;
                     $("#selectItemCode").append(id);
                 }
@@ -298,9 +298,9 @@
         $.ajax({
             url:BASE_URL+ 'customer?option=loadCode',
             success: function (res) {
-                console.log(res); // Check the response in the browser console
+                console.log(res);
                 for (let cus of res.data) {
-                    console.log(cus.id); // Check if you're getting the customer IDs correctly
+                    console.log(cus.id);
                     let id = `<option>${cus.id}</option>`;
                     $("#selectCusID").append(id);
                 }
@@ -422,7 +422,7 @@
         let subTot = tot - totMin;
         disTOGave = totMin;
 
-        $('#subTotal').val(subTot);
+        $('#subtotal').val(subTot);
         updateTotals();
     });
 </script>

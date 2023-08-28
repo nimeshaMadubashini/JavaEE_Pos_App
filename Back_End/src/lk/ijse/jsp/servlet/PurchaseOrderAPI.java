@@ -15,7 +15,7 @@ import java.sql.SQLException;
 
 @WebServlet(urlPatterns = {"/pages/purchase-order"})
 
-public class OrderServlet extends HttpServlet {
+public class PurchaseOrderAPI extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String cusName = req.getParameter("cusName");
