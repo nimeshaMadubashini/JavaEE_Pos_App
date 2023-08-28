@@ -397,6 +397,7 @@ loadCusCode();
             dataType:"json",
             success: function (res) {
                 alert(res.message);
+                ClearValue();
             },
             error: function (error) {
                 alert(JSON.parse(error.responseText).message);
@@ -420,6 +421,21 @@ loadCusCode();
         $('#subtotal').val(subTot);
         updateTotals();
     });
+    function ClearValue() {
+        $("#txtOrderID").valueOf("");
+        $("#txtDate").valueOf("");
+        $("#txtItemCode").val("");
+        $("#txtItemDescription").val("");
+        $("#txtItemPrice").val("");
+        $("#txtQTYOnHand").val("");
+        $("#txtQty").val("");
+        $('#txtDiscount').val("");
+        $('#txtBalance').val("")
+        $("#orderCustomerID").val("");
+        $("#orderCustomerName").val("");
+        $("#orderCustomerAddress").val("");
+        let tableBody = $("#orderTable");
+        tableBody.empty();    }
 </script>
 </body>
 </html>
