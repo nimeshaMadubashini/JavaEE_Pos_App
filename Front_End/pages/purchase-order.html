@@ -293,6 +293,7 @@
     }
 
 
+
     function loadCusCode() {
         $("#selectCusID").empty();
         $.ajax({
@@ -396,14 +397,28 @@
         $("#txtBalance").val(balanceAmount.toFixed(2));
     }
     $("#btnSubmitOrder").click(function () {
-        let formData = $("#formData").serialize();
+        let oid = $("#txtOrderID").val();
+        let date=   $("#txtDate").val();
+        let odCusId=  $("#orderCustomerID").val();
+        let odDetail=getAllOdrderDetail();
+
+        let ob={
+            oid:oid,
+            date:date,
+            odCusId:odCusId,
+            odDetail:odDetail
+        }
+
         $.ajax({
-            url:BASE_URL+ "purchase-order",
+            url:BASE_URL+"purchase-order",
             method: "post",
-            data: formData,
+            data: JSON.stringify(ob),
+            contentType: "application/json",
             dataType:"json",
+
             success: function (res) {
                 alert(res.message);
+                ClearValue();
             },
             error: function (error) {
                 alert(JSON.parse(error.responseText).message);
@@ -427,6 +442,17 @@
         $('#subtotal').val(subTot);
         updateTotals();
     });
+    function getAllOdrderDetail() {
+        let rows=$("#orderTable").children.length;
+        let array=[];
+        for (let i = 0; i < rows; i++) {
+            let code=$("#orderTable").children.eq(i).children(":eq(0)").text();
+            let byQty=$("#orderTable").children.eq(i).children(":eq(3)").text();
+            let qty=$("#orderTable").children.eq(i).children(":eq(4)").text();
+            let price=$("#orderTable").children.eq(i).children(":eq(2)").text();
+            array.push({code:code,byQty:byQty,qty:qty,price:price});
+
+        }
 </script>
 </body>
 </html>
