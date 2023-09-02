@@ -23,8 +23,7 @@ public class CustomerServletAPI extends HttpServlet {
                 case "getAll":
                     PreparedStatement pstm = connection.prepareStatement("select * from customer");
                     ResultSet rst = pstm.executeQuery();
-                    resp.addHeader("Content-Type", "application/json");
-                    resp.addHeader("Access-Control-Allow-Origin", "*");
+
                     JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
                     while (rst.next()) {
                         String id = rst.getString(1);
@@ -37,7 +36,7 @@ public class CustomerServletAPI extends HttpServlet {
                         customerObject.add("address", address);
                         jsonArrayBuilder.add(customerObject.build());
                     }
-                    resp.setContentType("application/json");
+
                     JsonObjectBuilder responseObj = Json.createObjectBuilder();
                     responseObj.add("Status", "ok");
                     responseObj.add("message", "Successfully Loaded...!");
@@ -59,7 +58,6 @@ public class CustomerServletAPI extends HttpServlet {
                         jsonArrayBuilder1.add(itemObject);
                     }
 
-                    resp.setContentType("application/json");
                     JsonObjectBuilder responseObj1 = Json.createObjectBuilder();
                     responseObj1.add("Status", "ok");
                     responseObj1.add("message", "Successfully Loaded...!");
@@ -79,7 +77,6 @@ public class CustomerServletAPI extends HttpServlet {
                             jsonArrayBuilder2.add(itemObject);
                         }
 
-                        resp.setContentType("application/json");
                         JsonObjectBuilder responseObj2 = Json.createObjectBuilder();
                         responseObj2.add("Status", "ok");
                         responseObj2.add("message", "Successfully Loaded...!");
@@ -106,7 +103,7 @@ public class CustomerServletAPI extends HttpServlet {
         String cusID = req.getParameter("cusID");
         String cusName = req.getParameter("cusName");
         String cusAddress = req.getParameter("cusAddress");
-        resp.addHeader("Access-Control-Allow-Origin", "*");
+
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AssCompany", "root", "1234");
@@ -138,8 +135,7 @@ public class CustomerServletAPI extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.addHeader("Access-Control-Allow-Origin", "*");
-        resp.addHeader("Content-Type", "application/json");
+
         String cusID = req.getParameter("id");
 
 
@@ -171,7 +167,7 @@ public class CustomerServletAPI extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.addHeader("Access-Control-Allow-Origin", "*");
+
         JsonReader reader = Json.createReader(req.getReader());
         JsonObject cusObj = reader.readObject();
         String id = cusObj.getString("id");
@@ -208,11 +204,5 @@ public class CustomerServletAPI extends HttpServlet {
         }
     }
 
-    @Override
-    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.addHeader("Access-Control-Allow-Origin", "*");
-        resp.addHeader("Access-Control-Allow-Methods","PUT,DELETE");
-        resp.addHeader("Access-Control-Allow-Headers","content-type");
 
-    }
 }

@@ -335,8 +335,8 @@
         let itemCode = $("#txtItemCode").val();
         let itemName = $("#txtItemDescription").val();
         let price = parseFloat($("#txtItemPrice").val());
-        let quantity = parseInt($("#txtQty").val());
-        let Buying_quantity = parseInt($("#txtQTYOnHand").val());
+        let quantity = parseInt($("#txtQTYOnHand").val());
+        let Buying_quantity = parseInt($("#txtQty").val());
 
 
         let total = price * quantity;
@@ -405,10 +405,13 @@
           odCusId:odCusId,
           odDetail:odDetail
       }
-
+console.log(date,oid,odDetail,odCusId);
         $.ajax({
             url: "purchase-order",
             method: "post",
+            headers:{
+                Auth:"user=user,pass=admin"
+            },
             data: JSON.stringify(ob),
             contentType: "application/json",
             dataType:"json",
@@ -455,15 +458,16 @@
         let tableBody = $("#orderTable");
         tableBody.empty();    }
     function getAllOdrderDetail() {
-        let rows=$("#orderTable").children.length;
+        let rows=$("#orderTable").children().length;
         let array=[];
         for (let i = 0; i < rows; i++) {
-            let code=$("#orderTable").children.eq(i).children(":eq(0)").text();
-            let byQty=$("#orderTable").children.eq(i).children(":eq(3)").text();
-            let qty=$("#orderTable").children.eq(i).children(":eq(4)").text();
-            let price=$("#orderTable").children.eq(i).children(":eq(2)").text();
-            array.push({code:code,byQty:byQty,qty:qty,price:price});
+            let code = $("#orderTable tr:eq(" + i + ") td:eq(0)").text();
+            let byQty = $("#orderTable tr:eq(" + i + ") td:eq(3)").text();
+            let qty = $("#orderTable tr:eq(" + i + ") td:eq(4)").text();
+            let price = $("#orderTable tr:eq(" + i + ") td:eq(2)").text();
 
+            array.push({code:code,byQty:byQty,qty:qty,price:price});
+console.log(code,byQty,qty,price);
         }
         return array;
         }

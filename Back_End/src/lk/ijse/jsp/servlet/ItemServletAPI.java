@@ -16,18 +16,19 @@ public class ItemServletAPI extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-
-
+            resp.addHeader("Access-Control-Allow-Origin", "*");
+            resp.addHeader("Content-Type", "application/json");
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AssCompany?useSSL=true&requireSSL=true", "root", "1234");
             String option = req.getParameter("option");
 
+
             switch (option) {
                 case "getAll":
+                    resp.addHeader("Access-Control-Allow-Origin", "*");
+                    resp.addHeader("Content-Type", "application/json");
                     PreparedStatement pstm = connection.prepareStatement("select * from item");
                     ResultSet rst = pstm.executeQuery();
-                    resp.addHeader("Content-Type", "application/json");
-                    resp.addHeader("Access-Control-Allow-Origin", "*");
                     JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
                     while (rst.next()) {
                         String code = rst.getString(1);
@@ -52,11 +53,14 @@ public class ItemServletAPI extends HttpServlet {
 
                     break;
                 case "search":
+
                     String itemCode = req.getParameter("code");
+
                     if (itemCode != null && !itemCode.isEmpty()) {
                         PreparedStatement pstm1 = connection.prepareStatement("SELECT * FROM item WHERE code = ?");
                         pstm1.setString(1, itemCode);
                         ResultSet rst1 = pstm1.executeQuery();
+
                         JsonArrayBuilder jsonArrayBuilder1 = Json.createArrayBuilder();
                         while (rst1.next()) {
                             JsonObjectBuilder itemObject = Json.createObjectBuilder();
@@ -67,7 +71,8 @@ public class ItemServletAPI extends HttpServlet {
 
                             jsonArrayBuilder1.add(itemObject.build());
                         }
-                        resp.setContentType("application/json");
+
+
                         JsonObjectBuilder responseObj1 = Json.createObjectBuilder();
                         responseObj1.add("Status", "ok");
                         responseObj1.add("message", "Successfully Loaded...!");
@@ -79,6 +84,7 @@ public class ItemServletAPI extends HttpServlet {
                     break;
                 case "loadCode":
                     PreparedStatement pstm2 = connection.prepareStatement("SELECT code FROM item");
+
                         try (ResultSet rst2= pstm2.executeQuery()) {
                             JsonArrayBuilder jsonArrayBuilder2 = Json.createArrayBuilder();
                             while (rst2.next()) {
@@ -90,7 +96,6 @@ public class ItemServletAPI extends HttpServlet {
                                 jsonArrayBuilder2.add(itemObject);
                             }
 
-                            resp.setContentType("application/json");
                             JsonObjectBuilder responseObj1 = Json.createObjectBuilder();
                             responseObj1.add("Status", "ok");
                             responseObj1.add("message", "Successfully Loaded...!");
@@ -137,7 +142,7 @@ public class ItemServletAPI extends HttpServlet {
         String qty = req.getParameter("qty");
         String unitPrice = req.getParameter("unitPrice");
 
-        resp.addHeader("Access-Control-Allow-Origin", "*");
+
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AssCompany", "root", "1234");
@@ -171,10 +176,8 @@ public class ItemServletAPI extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.addHeader("Access-Control-Allow-Origin", "*");
-        resp.addHeader("Content-Type", "application/json");
-        String code = req.getParameter("code");
 
+        String code = req.getParameter("code");
 
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -204,7 +207,7 @@ public class ItemServletAPI extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.addHeader("Access-Control-Allow-Origin", "*");
+
         JsonReader reader = Json.createReader(req.getReader());
         JsonObject cusObj = reader.readObject();
         String code = cusObj.getString("code");
@@ -245,11 +248,5 @@ public class ItemServletAPI extends HttpServlet {
         }
     }
 
-    @Override
-    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.addHeader("Access-Control-Allow-Origin", "*");
-        resp.addHeader("Access-Control-Allow-Methods","PUT,DELETE");
-        resp.addHeader("Access-Control-Allow-Headers","content-type");
 
-    }
 }

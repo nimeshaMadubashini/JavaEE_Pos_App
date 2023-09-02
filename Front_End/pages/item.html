@@ -111,7 +111,7 @@
     function getAllItem() {
         $("#tblItem").empty();
         $.ajax({
-            url:BASE_URL+ 'item',
+            url:BASE_URL+ 'item?option=getAll',
             success: function (res) {
                 for (let item of res.data) {
                     let code = item.code;
@@ -147,7 +147,7 @@
     $("#btnItem").click(function () {
         let formData = $("#itemForm").serialize();
         $.ajax({
-            url:BASE_URL + "item",
+            url:"http://localhost:8080/Pos/pages/item",
             method: "post",
             data: formData,
             dataType:"json",
@@ -178,7 +178,7 @@
 
         }
         $.ajax({
-            url:BASE_URL + "item",
+            url:"http://localhost:8080/Pos/pages/item",
             method: "put",
             contentType: "application/json",
             data: JSON.stringify(itemObj),
@@ -195,7 +195,7 @@
     $("#btnItemDelete").click(function () {
         let code = $("#itemCode").val();
         $.ajax({
-            url:BASE_URL + "item?id=" + code,
+            url:"http://localhost:8080/Pos/pages/item?id=" + code,
             method: "delete",
 
             success: function (res) {

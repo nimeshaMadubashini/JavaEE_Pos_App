@@ -22,9 +22,8 @@
     <ul class="list-group list-group-horizontal text-danger justify-content-end font-weight-bold">
         <li class="list-group-item bg-white" id="lnkHome"><a href="../index.html">Home</a></li>
         <li class="list-group-item bg-white" id="lnkCustomer"><a href="customer.html">Customer</a></li>
-        <li class="list-group-item bg-white" id="lnkItem"><a href="item.html">Item</a></li>
-        <li class="list-group-item bg-danger text-white" id="lnkOrders"><a class="text-white"
-                                                                           href="purchase-order.html">Orders</a></li>
+        <li class="list-group-item bg-white" id="lnkItem"><a  href="item.html">Item</a></li>
+        <li class="list-group-item bg-danger text-white" id="lnkOrders"><a class="text-white" href="purchase-order.html">Orders</a></li>
     </ul>
 </header>
 
@@ -43,7 +42,7 @@
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label>Order ID :</label>
-                                            <input class="form-control" id="txtOrderID" type="text" name="id" >
+                                            <input class="form-control" id="txtOrderID" type="text" name="id">
                                             <span class="control-error"
                                                   id="orderId-invalid-error"></span>
                                         </div>
@@ -59,12 +58,8 @@
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label>Customer :</label>
-                                            <select class="form-control" id="selectCusID">
-                                                <option value="1">A</option>
-                                                <option value="2">B</option>
-                                            </select>
-                                            <span class="control-error"
-                                                  id="cus-empty-error"></span>
+                                            <select class="form-control" id="selectCusID"></select>
+                                            <span class="control-error" id="cus-empty-error"></span>
                                         </div>
                                     </div>
                                     <div class="col-6">
@@ -215,7 +210,8 @@
                         <th>Item Code</th>
                         <th>Item Name</th>
                         <th>Price</th>
-                        <th>Quantity</th>
+                        <th>Qty_On_Hand</th>
+                        <th>Buying QTY</th>
                         <th>Total</th>
                     </tr>
                     </thead>
@@ -230,35 +226,36 @@
 </main>
 
 
+
 <script src="../assets/js/jquery-3.6.1.min.js"></script>
 <script src="../assets/js/bootstrap.min.js"></script>
 <script>
-    const BASE_URL = "http://localhost:8080/Pos/pages/";
+    const BASE_URL="http://localhost:8080/Pos/pages/";
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         loadItemCode();
         loadCusCode();
         fillCurrentDate();
         updateOrderTable();
         updateTotals();
-        $("#selectItemCode").change(function () {
+
+        $("#selectItemCode").change(function() {
             var selectedCode = $(this).val();
             if (selectedCode) {
                 fetchItemDetails(selectedCode);
             }
         });
-        $("#selectCusID").change(function () {
+        $("#selectCusID").change(function() {
             var selectedid = $(this).val();
             if (selectedid) {
                 fetchCusDetails(selectedid);
             }
         });
     });
-
     function loadItemCode() {
         $("#selectItemCode").empty();
         $.ajax({
-            url: BASE_URL+'item?option=loadCode',
+            url:BASE_URL + 'item?option=loadCode',
             success: function (res) {
                 console.log(res);
                 for (let item of res.data) {
@@ -275,9 +272,9 @@
 
     function fetchItemDetails(itemCode) {
         $.ajax({
-            url: BASE_URL+'item?option=search',
-            data: {code: itemCode},
-            success: function (res) {
+            url:BASE_URL + 'item?option=search',
+            data: { code: itemCode },
+            success: function(res) {
                 if (res.data.length > 0) {
                     var item = res.data[0];
                     $("#txtItemCode").val(item.code);
@@ -286,18 +283,17 @@
                     $("#txtQTYOnHand").val(item.qty);
                 }
             },
-            error: function (error) {
+            error: function(error) {
                 console.error(error);
             }
         });
     }
 
 
-
     function loadCusCode() {
         $("#selectCusID").empty();
         $.ajax({
-            url:BASE_URL+ 'customer?option=loadCode',
+            url:BASE_URL + 'customer?option=loadCode',
             success: function (res) {
                 console.log(res);
                 for (let cus of res.data) {
@@ -314,9 +310,9 @@
 
     function fetchCusDetails(selectedId) {
         $.ajax({
-            url:BASE_URL+ 'customer?option=search',
-            data: {cusId: selectedId},
-            success: function (res) {
+            url:BASE_URL + 'customer?option=search',
+            data:  { cusId: selectedId },
+            success: function(res) {
                 if (res.data.length > 0) {
                     var cus = res.data[0];
                     $("#orderCustomerID").val(cus.id);
@@ -324,7 +320,7 @@
                     $("#orderCustomerAddress").val(cus.address);
                 }
             },
-            error: function (error) {
+            error: function(error) {
                 console.error(error);
             }
         });
@@ -341,7 +337,9 @@
         let itemCode = $("#txtItemCode").val();
         let itemName = $("#txtItemDescription").val();
         let price = parseFloat($("#txtItemPrice").val());
-        let quantity = parseInt($("#txtQty").val());
+        let quantity = parseInt($("#txtQTYOnHand").val());
+        let Buying_quantity = parseInt($("#txtQty").val());
+
 
         let total = price * quantity;
 
@@ -350,10 +348,10 @@
             itemName: itemName,
             price: price,
             quantity: quantity,
+            Buying_quantity:Buying_quantity,
             total: total
         });
 
-        // Clear input fields
         $("#txtItemCode").val("");
         $("#txtItemDescription").val("");
         $("#txtItemPrice").val("");
@@ -374,6 +372,7 @@
             <td>${item.itemName}</td>
             <td>${item.price}</td>
             <td>${item.quantity}</td>
+            <td>${item.Buying_quantity}</td>
             <td>${item.total}</td>
         </tr>`;
             tableBody.append(row);
@@ -408,9 +407,9 @@
             odCusId:odCusId,
             odDetail:odDetail
         }
-
+        console.log(date,oid,odDetail,odCusId);
         $.ajax({
-            url:BASE_URL+"purchase-order",
+            url:BASE_URL + "purchase-order",
             method: "post",
             data: JSON.stringify(ob),
             contentType: "application/json",
@@ -442,17 +441,37 @@
         $('#subtotal').val(subTot);
         updateTotals();
     });
+    function ClearValue() {
+        $("#txtOrderID").val("");
+        $("#txtDate").val("");
+        $("#txtItemCode").val("");
+        $("#txtItemDescription").val("");
+        $("#txtItemPrice").val("");
+        $("#txtQTYOnHand").val("");
+        $("#txtQty").val("");
+        $('#txtDiscount').val("");
+        $('#txtBalance').val("")
+        $("#orderCustomerID").val("");
+        $("#orderCustomerName").val("");
+        $("#orderCustomerAddress").val("");
+        let tableBody = $("#orderTable");
+        tableBody.empty();    }
     function getAllOdrderDetail() {
-        let rows=$("#orderTable").children.length;
+        let rows=$("#orderTable").children().length;
         let array=[];
         for (let i = 0; i < rows; i++) {
-            let code=$("#orderTable").children.eq(i).children(":eq(0)").text();
-            let byQty=$("#orderTable").children.eq(i).children(":eq(3)").text();
-            let qty=$("#orderTable").children.eq(i).children(":eq(4)").text();
-            let price=$("#orderTable").children.eq(i).children(":eq(2)").text();
-            array.push({code:code,byQty:byQty,qty:qty,price:price});
+            let code = $("#orderTable tr:eq(" + i + ") td:eq(0)").text();
+            let byQty = $("#orderTable tr:eq(" + i + ") td:eq(3)").text();
+            let qty = $("#orderTable tr:eq(" + i + ") td:eq(4)").text();
+            let price = $("#orderTable tr:eq(" + i + ") td:eq(2)").text();
 
+            array.push({code:code,byQty:byQty,qty:qty,price:price});
+            console.log(code,byQty,qty,price);
         }
+        return array;
+    }
+
+
 </script>
 </body>
 </html>

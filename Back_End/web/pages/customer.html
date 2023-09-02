@@ -127,6 +127,9 @@
         $.ajax({
             url: "customer",
             method: "put",
+            headers:{
+                Auth:"user=user,pass=admin"
+            },
             contentType: "application/json",
             data: JSON.stringify(cusObj),
             dataType:"json",
@@ -145,6 +148,9 @@
         $.ajax({
             url: "customer?id=" + id,
             method: "delete",
+            headers:{
+                Auth:"user=user,pass=admin"
+            },
             dataType:"get",
             success: function (res) {
                 alert(res.message);
@@ -162,6 +168,9 @@
         $.ajax({
             url: "customer",
             method: "post",
+            headers:{
+                Auth:"user=user,pass=admin"
+            },
             data: formData,
             dataType:"json",
             success: function (res) {
@@ -178,6 +187,9 @@ alert(JSON.parse(error.responseText).message);
         $("#tblCustomer").empty();
         $.ajax({
             url: 'customer?option=getAll',
+            headers:{
+                Auth:"user=user,pass=admin"
+            },
             success: function (res) {
                 for (let customer of res.data) {
                     let id = customer.id;

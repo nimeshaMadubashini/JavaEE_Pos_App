@@ -192,7 +192,7 @@
     function getAll() {
         $("#tblCustomer").empty();
         $.ajax({
-            url:BASE_URL+'customer',
+            url:BASE_URL+'customer?option=getAll',
             success: function (res) {
                 for (let customer of res.data) {
                     let id = customer.id;
