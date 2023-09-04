@@ -256,6 +256,9 @@
         $("#selectItemCode").empty();
         $.ajax({
             url:BASE_URL + 'item?option=loadCode',
+            headers:{
+                Auth:"user=user,pass=admin"
+            },
             success: function (res) {
                 console.log(res);
                 for (let item of res.data) {
@@ -273,6 +276,9 @@
     function fetchItemDetails(itemCode) {
         $.ajax({
             url:BASE_URL + 'item?option=search',
+            headers:{
+                Auth:"user=user,pass=admin"
+            },
             data: { code: itemCode },
             success: function(res) {
                 if (res.data.length > 0) {
@@ -294,6 +300,9 @@
         $("#selectCusID").empty();
         $.ajax({
             url:BASE_URL + 'customer?option=loadCode',
+            headers:{
+                Auth:"user=user,pass=admin"
+            },
             success: function (res) {
                 console.log(res);
                 for (let cus of res.data) {
@@ -311,6 +320,9 @@
     function fetchCusDetails(selectedId) {
         $.ajax({
             url:BASE_URL + 'customer?option=search',
+            headers:{
+                Auth:"user=user,pass=admin"
+            },
             data:  { cusId: selectedId },
             success: function(res) {
                 if (res.data.length > 0) {
@@ -410,6 +422,9 @@
         console.log(date,oid,odDetail,odCusId);
         $.ajax({
             url:BASE_URL + "purchase-order",
+            headers:{
+                Auth:"user=user,pass=admin"
+            },
             method: "post",
             data: JSON.stringify(ob),
             contentType: "application/json",

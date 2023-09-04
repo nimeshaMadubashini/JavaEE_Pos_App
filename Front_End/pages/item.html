@@ -112,6 +112,9 @@
         $("#tblItem").empty();
         $.ajax({
             url:BASE_URL+ 'item?option=getAll',
+            headers:{
+                Auth:"user=user,pass=admin"
+            },
             success: function (res) {
                 for (let item of res.data) {
                     let code = item.code;
@@ -148,6 +151,9 @@
         let formData = $("#itemForm").serialize();
         $.ajax({
             url:"http://localhost:8080/Pos/pages/item",
+            headers:{
+                Auth:"user=user,pass=admin"
+            },
             method: "post",
             data: formData,
             dataType:"json",
@@ -180,6 +186,9 @@
         $.ajax({
             url:"http://localhost:8080/Pos/pages/item",
             method: "put",
+            headers:{
+                Auth:"user=user,pass=admin"
+            },
             contentType: "application/json",
             data: JSON.stringify(itemObj),
             dataType:"json",
@@ -197,7 +206,9 @@
         $.ajax({
             url:"http://localhost:8080/Pos/pages/item?id=" + code,
             method: "delete",
-
+            headers:{
+                Auth:"user=user,pass=admin"
+            },
             success: function (res) {
                 console.log("Delete success:", res);
                 alert(res.message);

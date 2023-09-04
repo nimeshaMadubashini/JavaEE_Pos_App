@@ -409,9 +409,7 @@ console.log(date,oid,odDetail,odCusId);
         $.ajax({
             url: "purchase-order",
             method: "post",
-            headers:{
-                Auth:"user=user,pass=admin"
-            },
+
             data: JSON.stringify(ob),
             contentType: "application/json",
             dataType:"json",

@@ -1,3 +1,4 @@
+/*
 package lk.ijse.jsp.filter;
 
 import javax.json.Json;
@@ -42,3 +43,4 @@ public class AuthFilter implements Filter {
 
     }
 }
+*/

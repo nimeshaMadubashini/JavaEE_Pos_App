@@ -109,9 +109,7 @@
         $("#tblItem").empty();
         $.ajax({
             url: 'item?option=getAll',
-            headers:{
-                Auth:"user=user,pass=admin"
-            },
+
             success: function (res) {
                 for (let item of res.data) {
                     let code = item.code;
@@ -149,9 +147,7 @@
         $.ajax({
             url:"item",
             method: "post",
-            headers:{
-                Auth:"user=user,pass=admin"
-            },
+
             data: formData,
             dataType:"json",
             success: function (res) {
@@ -183,9 +179,7 @@
         $.ajax({
             url:"item",
             method: "put",
-            headers:{
-                Auth:"user=user,pass=admin"
-            },
+
             contentType: "application/json",
             data: JSON.stringify(itemObj),
             dataType:"json",
@@ -204,9 +198,7 @@
         $.ajax({
             url: "item?id=" + code,
             method: "delete",
-            headers:{
-                Auth:"user=user,pass=admin"
-            },
+
             dataType: "json",
             success: function (res) {
                 console.log("Delete success:", res);

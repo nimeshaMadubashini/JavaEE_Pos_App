@@ -127,6 +127,9 @@
         $.ajax({
             url:BASE_URL+ "customer",
             method: "put",
+          /*  headers:{
+                Auth:"user=user,pass=admin"
+            },*/
             contentType: "application/json",
             data: JSON.stringify(cusObj),
             dataType:"json",
@@ -160,6 +163,9 @@
         $.ajax({
             url: BASE_URL + "customer?id=" + id,
             method: "delete",
+           /* headers:{
+                Auth:"user=user,pass=admin"
+            },*/
             success: function (res) {
                 console.log("Delete success:", res);
                 alert(res.message);
@@ -177,6 +183,9 @@
         $.ajax({
             url:BASE_URL+"customer",
             method: "post",
+          /*  headers:{
+                Auth:"user=user,pass=admin"
+            },*/
             data: formData,
             dataType:"json",
             success: function (res) {
@@ -193,6 +202,9 @@
         $("#tblCustomer").empty();
         $.ajax({
             url:BASE_URL+'customer?option=getAll',
+        /*    headers:{
+                Auth:"user=user,pass=admin"
+            },*/
             success: function (res) {
                 for (let customer of res.data) {
                     let id = customer.id;
